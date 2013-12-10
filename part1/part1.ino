@@ -1,9 +1,10 @@
 
-
 #include <LiquidCrystal.h>
 #include <Servo.h> 
 
 Servo servo1;
+const int flexpinone = 1;
+const int flexpintwo = 2;
 
 LiquidCrystal lcd(12,11,5,4,3,2);
 const int analogInPin = A0 ;
@@ -18,16 +19,15 @@ void setup() {
   
   servo1.attach(10);
   Serial.begin(9600);
-} //end
+} 
 
 void servoopen(){
  servo1.write(90);
- delay(6000);
+ delay(3000);
  servoclose(); 
 }
 
 void servoclose(){
- // delay(3000);
   servo1.write(0);
 }
 
@@ -35,27 +35,10 @@ void intro() {
   lcd.setCursor(0, 0);
  
   char welcome[21]; 
-  welcome[0] = 'W';
-  welcome[1] = 'e';
-  welcome[2] = 'l';
-  welcome[3] = 'c';
-  welcome[4] = 'o';
-  welcome[5] = 'm';
-  welcome[6] = 'e';
-  welcome[7] = ' ';
-  welcome[8] = 'T';
-  welcome[9] = 'o';
-  welcome[10] = ' ';
-  welcome[11] = 'S';
-  welcome[12] = 'm';
-  welcome[13] = 'a';
-  welcome[14] = 'r';
-  welcome[15] = 't';
-  welcome[16] = ' ';
-  welcome[17] = 'P';
-  welcome[18] = 'a';
-  welcome[19] = 'r';
-  welcome[20] = 'k';
+  welcome[0] = 'W'; welcome[1] = 'e'; welcome[2] = 'l'; welcome[3] = 'c'; welcome[4] = 'o';
+  welcome[5] = 'm'; welcome[6] = 'e'; welcome[7] = ' '; welcome[8] = 'T'; welcome[9] = 'o'; 
+  welcome[10] = ' '; welcome[11] = 'S'; welcome[12] = 'm'; welcome[13] = 'a'; welcome[14] = 'r';
+  welcome[15] = 't'; welcome[16] = ' '; welcome[17] = 'P'; welcome[18] = 'a'; welcome[19] = 'r'; welcome[20] = 'k';
   
   for (int i = 0; i < 10; i++) {
    lcd.print(welcome[i]);
@@ -77,20 +60,9 @@ void showcap(){
   lcd.setCursor(1,0);
   char available[14];
 
-  available[0] = 'A';
-  available[1] = 'v';
-  available[2] = 'a';
-  available[3] = 'i';
-  available[4] = 'l';
-  available[5] = ' ';
-  available[6] = 'C';
-  available[7] = 'a';
-  available[8] = 'p';
-  available[9] = 'a';
-  available[10] = 'c';
-  available[11] = 'i';
-  available[12] = 't';
-  available[13] = 'y';
+  available[0] = 'A'; available[1] = 'v'; available[2] = 'a'; available[3] = 'i'; available[4] = 'l';
+  available[5] = ' '; available[6] = 'C'; available[7] = 'a'; available[8] = 'p'; available[9] = 'a';
+  available[10] = 'c'; available[11] = 'i'; available[12] = 't';available[13] = 'y';
   
  for (int i = 0; i < 14; i++){
   lcd.print(available[i]);
@@ -100,19 +72,27 @@ void showcap(){
 
 
 void loop(){
+  sensorValue = analogRead(analogInPin);
+  Serial.print("\nsensor = " );
+  Serial.print(sensorValue);
+  if ( sensorValue > 69 ) { servoopen(); } 
+  lcd.setCursor(7,1);
 
-//float sensorValue;
-sensorValue = analogRead(analogInPin);
+  int flexpositionone; int flexpositiontwo; int capacity = 2; int capacitytotal = 2;
 
-Serial.print("\nsensor = " );
-Serial.print(sensorValue);
+  flexpositionone = analogRead(flexpinone);
+  flexpositiontwo = analogRead(flexpintwo);
 
-if ( sensorValue > 250 ) { servoopen(); } 
+  if (flexpositionone > 800 && flexpositiontwo > 800 ){ capacity = 0; }
+  else if (flexpositionone > 800 || flexpositiontwo > 800 ){ capacity = 1; }
+  else { capacity = 2;}
 
-lcd.setCursor(4,1);
-lcd.print("CLOSED");
+  lcd.print(capacity);
 
 }
+
+
+
 
   
   
